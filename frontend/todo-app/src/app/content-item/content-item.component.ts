@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ContentService } from '../content.service';
+import { Todo } from '../models/Todo';
 
 @Component({
   selector: 'app-content-item',
@@ -7,11 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContentItemComponent implements OnInit {
 
-  number = [1, 2, 3, 4, 5]
+  private todos: Todo[];
 
-  constructor() { }
+  constructor(private todoService: ContentService) { }
 
   ngOnInit() {
+    this.todoService.getAll().subscribe(arr => {
+      this.todos = [...arr];
+    });
+
+  }
+
+  updateOnServer(id){
+    this.todoService.done(id).subscribe(res => {
+      window.location.reload();
+    });
   }
 
 }

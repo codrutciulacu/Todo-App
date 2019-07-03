@@ -13,7 +13,4 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     Optional<Todo> findByTask(String task);
 
-    @Query("SELECT t FROM todo t WHERE t.checked = true")
-    List<Todo> findAllDoneTasks();
-
 }

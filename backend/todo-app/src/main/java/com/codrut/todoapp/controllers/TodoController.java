@@ -1,6 +1,8 @@
 package com.codrut.todoapp.controllers;
 
 
+import com.codrut.todoapp.controllers.payload.request.TodoRequest;
+import com.codrut.todoapp.controllers.payload.response.TodoResponse;
 import com.codrut.todoapp.exceptions.NoTodoFoundException;
 import com.codrut.todoapp.models.Todo;
 import com.codrut.todoapp.repositories.TodoRepository;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,34 +37,30 @@ public class TodoController {
                 .orElseThrow(() -> new NoTodoFoundException("No Todo with name: " + name + " was found!"));
     }
 
-    @GetMapping("/getAllDoneTasks")
-    public List<Todo> getAllDoneTasks(){
-        return mTodoRepository.findAllDoneTasks();
-    }
-
-    public ResponseEntity<String> addNewTask(@RequestBody String name){
-        Todo newItem = new Todo(name);
+    @PostMapping("/add")
+    public ResponseEntity<TodoResponse> addNewTask(@Valid @RequestBody TodoRequest request){
+        Todo newItem = new Todo(request.getTask());
 
         mTodoRepository.save(newItem);
-        
-        return ResponseEntity.ok("The task has been created successfully!");
+
+        return ResponseEntity.ok(new TodoResponse("The task has been created successfully!"));
     }
 
-    @PutMapping("/getByName/{id}")
-    public ResponseEntity<String> checkAsDone(@PathVariable Long id){
+    @GetMapping("/done/{id}")
+    public ResponseEntity<TodoResponse> checkAsDone(@PathVariable Long id){
         Todo newTodo = mTodoRepository.findById(id)
                 .orElseThrow(() -> new NoTodoFoundException("No Todo with id: " + id + " was found!"));;
-        newTodo.setChecked(true);
+        newTodo.setChecked(!newTodo.getChecked());
         mTodoRepository.save(newTodo);
 
-        return ResponseEntity.ok("The task has been marked up as done!");
+        return ResponseEntity.ok(new TodoResponse("The task has been marked up as done!"));
     }
 
-    @DeleteMapping("/getByName/{id}")
-    public ResponseEntity<String> removeItemFromList(@PathVariable Long id){
-        mTodoRepository.deleteById(id);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<TodoResponse> removeItemFromList(@PathVariable Long id){
+        mTodoRepository.deleteById(id);     
 
-        return ResponseEntity.ok("The item has been removed!");
+        return ResponseEntity.ok(new TodoResponse("The item has been removed!"));
     }
 
 }

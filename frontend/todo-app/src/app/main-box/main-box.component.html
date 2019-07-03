@@ -1,7 +1,7 @@
 <mat-card class="wrapper">
     <mat-form-field style = "width: 65%;">
-        <input matInput placeholder="Input">
+        <input matInput #inputBox placeholder="Input" [formControl]="inputValue">
       </mat-form-field>
 
-      <button mat-raised-button color="primary">Primary</button>
+      <button mat-raised-button color="primary" (click)="addItem()">Primary</button>
 </mat-card>

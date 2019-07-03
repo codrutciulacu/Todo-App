@@ -1,7 +1,12 @@
 <mat-card class="wrapper">
-  <mat-selection-list *ngFor="let x of number">
-    <mat-list-option>
-      Option {{x}}
+  <mat-selection-list *ngFor="let todo of todos">
+    <mat-list-option [selected]="todo.checked" (click)="updateOnServer(todo.id)">
+      <del *ngIf="todo.checked === true">
+          {{todo.task}} 
+      </del>
+      <div *ngIf="todo.checked === false">
+        {{todo.task}} 
+      </div>
     </mat-list-option>
   </mat-selection-list>
 </mat-card>
